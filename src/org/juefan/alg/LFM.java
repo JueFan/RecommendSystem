@@ -14,7 +14,7 @@ import java.util.Set;
 public class LFM {
 	
 	public static final int latent = 100;
-	public static double alpha = 0.05;
+	public static double alpha = 0.03;
 	public static double lambda = 0.01;
 	public static final int iteration = 1;
 	public static final   int resys = 10;

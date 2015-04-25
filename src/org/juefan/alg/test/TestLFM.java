@@ -31,7 +31,7 @@ public class TestLFM {
 		
 	public static Map<Integer, Float> getFu(Map<Integer, Float> item){
 		Map<Integer, Float> map = new HashMap<Integer, Float>();	
-		while(map.size() < item.size()*3 && item.size() + map.size() < TestLFM.item.size() * 0.8){
+		while(map.size() < item.size()*4 && item.size() + map.size() < TestLFM.item.size() * 0.8){
 			/**抑制热门方式*/
 			/*int rand = (int) (Math.random() * randMap.size());
 			if(!item.containsKey(randMap.get(rand))){
@@ -97,10 +97,11 @@ public class TestLFM {
 			}		
 		}
 		
+
+		System.out.println("正在构造罗盘赌");
 		for(Integer item: TestLFM.item){
 			itemList.add(item);
 		}
-		System.out.println("正在构造罗盘赌");
 		int Fu = 0;
 		for(int user: UserItemTrain.keySet()){
 			UserItemTrain.get(user).putAll(getFu(UserItemTrain.get(user)));
