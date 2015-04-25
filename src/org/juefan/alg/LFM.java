@@ -112,7 +112,7 @@ public class LFM {
 						UserMap.get(user).set(i1, (float) (UserMap.get(user).get(i1) + alpha * 
 								(ItemMap.get(item).get(i1) * error - lambda * UserMap.get(user).get(i1))));
 						if (Float.isNaN(UserMap.get(user).get(i1) )) {
-							System.out.println("真的能出现:" + UserMap.get(user));
+							System.err.println("矩阵初始化或者参数有问题导致矩阵出现数值溢出");
 						}
 						ItemMap.get(item).set(i1, (float) (ItemMap.get(item).get(i1) + alpha * 
 								(UserMap.get(user).get(i1) * error - lambda * ItemMap.get(item).get(i1))));
@@ -137,9 +137,7 @@ public class LFM {
 		Collections.sort(tList, compare);
 		for(int i = 0; i < tList.size() && i < resys; i++){
 			set.add(tList.get(i).TemID);	
-			//System.out.print(tList.get(i).TemID + ":" + tList.get(i).sim + "\t");
 		}
-		//System.out.println();
 		return set;
 	}
 	
@@ -155,7 +153,6 @@ public class LFM {
 			if(!item.containsKey(i))
 				map.put(i, getPreference(UserMap.get(user), ItemMap.get(i)));
 		}
-		//System.out.println(user + "\t" + UserMap.get(user));
 		return getResysK(map);
 	}
 }
