@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.juefan.IO.FileIO;
 
+/**用户记录数据*/
 public class RatingData {
 	
 	public int userID;

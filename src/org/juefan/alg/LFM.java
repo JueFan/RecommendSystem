@@ -13,11 +13,11 @@ import java.util.Set;
 
 public class LFM {
 	
-	public static int latent = 50;
-	public static double alpha = 0.02;
+	public static final int latent = 50;
+	public static double alpha = 0.05;
 	public static double lambda = 0.01;
-	public static int iteration = 1;
-	public static int resys = 10;
+	public static final int iteration = 1;
+	public static final   int resys = 10;
 	
 	public static Map<Integer, List<Float>> UserMap = new HashMap<Integer, List<Float>>();
 	public static Map<Integer, List<Float>> ItemMap = new HashMap<Integer, List<Float>>();
@@ -85,6 +85,7 @@ public class LFM {
 		return p;
 	}
 	
+	/**预测评分差*/
 	public static float Predict(float i1, float i2){
 		return i1 - i2;
 	}
@@ -114,7 +115,6 @@ public class LFM {
 		}	
 	}
 	
-	
 	/**
 	 * 获取用户的最终推荐列表
 	 * @param map 项目的得分值表
@@ -125,8 +125,7 @@ public class LFM {
 		Set<Integer> set = new HashSet<Integer>();
 		for(Integer key: map.keySet())
 			tList.add(new State(key,  map.get(key)));
-		Collections.sort(tList, compare);
-
+		//Collections.sort(tList, compare);
 		for(int i = 0; i < tList.size() && i < resys; i++){
 			set.add(tList.get(i).TemID);	
 		}
@@ -147,6 +146,4 @@ public class LFM {
 		}
 		return getResysK(map);
 	}
-	
-
 }
