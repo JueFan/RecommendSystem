@@ -30,29 +30,17 @@ public class TestLFM {
 	public static LFM lfm = new LFM();
 		
 	public static Map<Integer, Float> getFu(Map<Integer, Float> item){
-		Map<Integer, Float> map = new HashMap<Integer, Float>();
-
-		/*int rand = 0;
-		while(map.size() < item.size() * 2 && item.size() + map.size() < itemList.size()){
-			float R = (float) Math.random();
-			boolean bool = true;
-			for(int i = 0; i < randList.size() && bool; i++){
-				if(randList.get(i) >= R){
-					rand = i;
-					bool = false;
-				}
-			}
-			rand = (int) (Math.random() * randList.size());
-			if(!item.containsKey(itemList.get(rand))){
-				//System.out.println(itemList.get(rand) + "\t" + TestLFM.map.get(itemList.get(rand)));
-				map.put(itemList.get(rand), (float) 0);
-			}
-		}*/
-		
-		while(map.size() < item.size()*5 && item.size() + map.size() < TestLFM.item.size() * 0.8){
-			int rand = (int) (Math.random() * randMap.size());
+		Map<Integer, Float> map = new HashMap<Integer, Float>();	
+		while(map.size() < item.size()*3 && item.size() + map.size() < TestLFM.item.size() * 0.8){
+			/**抑制热门方式*/
+			/*int rand = (int) (Math.random() * randMap.size());
 			if(!item.containsKey(randMap.get(rand))){
 				map.put(randMap.get(rand), (float) 0);
+			}*/
+			/**同等对待方式*/
+			int rand = (int) (Math.random() *  TestLFM.itemList.size());
+			if(!item.containsKey( TestLFM.itemList.get(rand))){
+				map.put( TestLFM.itemList.get(rand), (float) 0);
 			}
 		}
 		return map;
@@ -109,6 +97,9 @@ public class TestLFM {
 			}		
 		}
 		
+		for(Integer item: TestLFM.item){
+			itemList.add(item);
+		}
 		System.out.println("正在构造罗盘赌");
 		int Fu = 0;
 		for(int user: UserItemTrain.keySet()){
@@ -118,23 +109,23 @@ public class TestLFM {
 		}
 		System.out.println("负样本生成完毕");
 
-		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm");//设置日期格式
+		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH-mm");//设置日期格式
 		String dataString = "\\data\\output\\Result\\" + df.format(new Date()) + "_result.txt";
 		LFM lfm = new LFM(user, item);
-		for(int trac = 0; trac <= 10; trac++){
+		for(int trac = 0; trac <= 20; trac++){
 			LFM.LatentFactorModel(UserItemTrain);
 			for(int user:UserItemTrain.keySet()){
 				if(UserItemTest.containsKey(user)){
 					Evaluation.setEvaluation(MapToSet(UserItemTest.get(user)), lfm.getResysList(user, UserItemTrain.get(user)));
 				}
 			}
-			System.out.println("准确率 = " + Evaluation.getPrecision() * 100 + "%\t\t召回率 = " + Evaluation.getRecall() * 100 + "%");
+			System.out.println("准确率 = " + Evaluation.getPrecision() * 100 + "%\t\t召回率 = " + Evaluation.getRecall() * 100 + "%\t\t覆盖率 = " + Evaluation.getCoverage()/item.size() * 100 + "%");
 			FileIO.FileWrite(System.getProperty("user.dir") + dataString, "===================使用算法 : " + lfm.toString()
 					+ "=====================\n具体参数: "			
 					+ "\nlatent = " + LFM.latent
 					+"\nalpha = " + LFM.alpha
 					+"\nlambda = " + LFM.lambda
-					+ "\n准确率 = " + Evaluation.getPrecision() * 100 + "%\n召回率 = " + Evaluation.getRecall() * 100 + "%\n", true);
+					+ "\n准确率 = " + Evaluation.getPrecision() * 100 + "%\t\t召回率 = " + Evaluation.getRecall() * 100 + "%\t\t覆盖率 = " + Evaluation.getCoverage()/item.size() * 100 + "%\n", true);
 		}
 	}
 

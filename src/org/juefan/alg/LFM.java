@@ -13,7 +13,7 @@ import java.util.Set;
 
 public class LFM {
 	
-	public static final int latent = 50;
+	public static final int latent = 100;
 	public static double alpha = 0.05;
 	public static double lambda = 0.01;
 	public static final int iteration = 1;
@@ -47,24 +47,30 @@ public class LFM {
 		public int compare(Object o1, Object o2) {			
 			State s1 = (State)o1;
 			State s2 = (State)o2;
-			return s1.sim < s2.sim ? 1:0;
+			return s1.sim < s2.sim ? 1:-1;
 		}		
 	}
 	
 	public  String toString(){
-		return "FLM";
+		return "LFM";
 	}
+	/**
+	 * 加载用户与项目的集合并初始化隐含矩阵
+	 * 注意隐含层的数值不能太大，建议在0.05左右
+	 * @param user
+	 * @param item
+	 */
 	public LFM(Set<Integer> user, Set<Integer> item){
 		for(Integer u:user){
 			List<Float> tList = new ArrayList<Float>();
 			for(int i = 0; i < latent; i++)
-				tList.add((float) Math.random());
+				tList.add((float) ((float) Math.random() * 0.1));
 			UserMap.put(u, tList);
 		}
 		for(Integer u:item){
 			List<Float> tList = new ArrayList<Float>();
 			for(int i = 0; i < latent; i++)
-				tList.add((float) Math.random());
+				tList.add((float) ((float) Math.random() *0.1));
 			ItemMap.put(u, tList);
 		}
 	}
@@ -105,13 +111,15 @@ public class LFM {
 					for(int i1 = 0; i1 < latent; i1++){
 						UserMap.get(user).set(i1, (float) (UserMap.get(user).get(i1) + alpha * 
 								(ItemMap.get(item).get(i1) * error - lambda * UserMap.get(user).get(i1))));
-						
+						if (Float.isNaN(UserMap.get(user).get(i1) )) {
+							System.out.println("真的能出现:" + UserMap.get(user));
+						}
 						ItemMap.get(item).set(i1, (float) (ItemMap.get(item).get(i1) + alpha * 
 								(UserMap.get(user).get(i1) * error - lambda * ItemMap.get(item).get(i1))));
 					}
 				}
 			}
-			alpha = (float) (alpha * 0.99);
+			alpha = (float) (alpha * 0.9);
 		}	
 	}
 	
@@ -123,12 +131,15 @@ public class LFM {
 	public Set<Integer> getResysK(Map<Integer, Float> map){
 		List<State> tList = new ArrayList<State>();
 		Set<Integer> set = new HashSet<Integer>();
-		for(Integer key: map.keySet())
-			tList.add(new State(key,  map.get(key)));
-		//Collections.sort(tList, compare);
+		for(Integer key: map.keySet()){
+			tList.add(new State(key,  map.get(key)));		
+		}
+		Collections.sort(tList, compare);
 		for(int i = 0; i < tList.size() && i < resys; i++){
 			set.add(tList.get(i).TemID);	
+			//System.out.print(tList.get(i).TemID + ":" + tList.get(i).sim + "\t");
 		}
+		//System.out.println();
 		return set;
 	}
 	
@@ -144,6 +155,7 @@ public class LFM {
 			if(!item.containsKey(i))
 				map.put(i, getPreference(UserMap.get(user), ItemMap.get(i)));
 		}
+		//System.out.println(user + "\t" + UserMap.get(user));
 		return getResysK(map);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿package org.juefan.eva;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Evaluation {
@@ -10,6 +11,7 @@ public class Evaluation {
 	public static float Recall = 0;
 	public static float Precision = 0;
 	public static float Coverage = 0;
+	public static  Set<Integer> coverSet = new HashSet<Integer>();
 
 	public static void ReSet(){
 		Ru = 0;
@@ -21,6 +23,7 @@ public class Evaluation {
 	}
 
 	public static void setEvaluation(Set<Integer> user, Set<Integer> resys){
+		coverSet.addAll(resys);
 		if(user.size() < resys.size())
 			Mix = Mix + getMix(user, resys);
 		else {
@@ -35,7 +38,6 @@ public class Evaluation {
 		for(Integer s:set1)
 			if(set2.contains(s))
 				mix++;
-		//System.out.println("成功匹配 " + mix + " 个");
 		return mix;
 	}
 
@@ -47,4 +49,7 @@ public class Evaluation {
 		return (float)Mix/Ru;
 	}
 
+	public static float getCoverage(){
+		return (float) coverSet.size();
+	}
 }
